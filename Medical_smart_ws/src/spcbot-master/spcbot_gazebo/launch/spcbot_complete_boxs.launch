@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find spcbot_gazebo)/worlds/enviroment_bug.world"/> 
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="recording" value="false"/>
+    <arg name="debug" value="false"/>
+  
+</include>
+  <arg name="initial_x" default="-8" />
+  <arg name="initial_y" default="2" />
+  <arg name="des_x" default="5" />
+  <arg name="des_y" default="-1" />
+  <param name="initial_x" value="$(arg initial_x)" />
+  <param name="initial_y" value="$(arg initial_y)" />
+    
+  <param name="des_pos_x" value="$(arg des_x)" />
+  <param name="des_pos_y" value="$(arg des_y)" />
+  
+  <!-- Convert an xacro and put on parameter server -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find spcbot_description)/urdf/spcbot.urdf.xacro'" />
+
+  <!-- Spawn a robot into Gazebo -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-param robot_description -urdf -model spcbot
+        -x -8 -y 2 -z 0" />
+  <node pkg="motion_plan" type="follow_wall.py" name="wall_follower" />
+  <node pkg="motion_plan" type="go_to_point.py" name="go_to_point" />
+  
+  <!-- Robots state publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" />
+
+  <!-- Starting Joint state publisher node which will publish the joint values   -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+</launch>
+
+
+

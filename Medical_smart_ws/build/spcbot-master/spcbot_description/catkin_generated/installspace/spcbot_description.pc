@@ -1,0 +1,8 @@
+prefix=/home/nam/Documents/Medical_smart_ws/install
+
+Name: spcbot_description
+Description: Description of spcbot_description
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
